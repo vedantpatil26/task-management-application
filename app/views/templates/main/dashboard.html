@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — TaskMaster{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Welcome back, {{ current_user.full_name }}</p>
+  </div>
+  <a href="{{ url_for('tasks.create') }}" class="btn btn-primary">+ New Task</a>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card stat-total">
+    <div class="stat-number">{{ stats.total }}</div>
+    <div class="stat-label">Total Tasks</div>
+  </div>
+  <div class="stat-card stat-pending">
+    <div class="stat-number">{{ stats.pending }}</div>
+    <div class="stat-label">Pending</div>
+  </div>
+  <div class="stat-card stat-progress">
+    <div class="stat-number">{{ stats.in_progress }}</div>
+    <div class="stat-label">In Progress</div>
+  </div>
+  <div class="stat-card stat-completed">
+    <div class="stat-number">{{ stats.completed }}</div>
+    <div class="stat-label">Completed</div>
+  </div>
+  <div class="stat-card stat-hold">
+    <div class="stat-number">{{ stats.on_hold }}</div>
+    <div class="stat-label">On Hold</div>
+  </div>
+  <div class="stat-card stat-overdue">
+    <div class="stat-number">{{ stats.overdue }}</div>
+    <div class="stat-label">Overdue</div>
+  </div>
+</div>
+
+<div class="section-header">
+  <h2 class="section-title">Recent Tasks</h2>
+  <a href="{{ url_for('tasks.list_tasks') }}" class="link-more">View all →</a>
+</div>
+
+{% if recent_tasks %}
+<div class="task-table-wrap">
+  <table class="task-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Created By</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in recent_tasks %}
+      <tr class="{% if task.is_overdue %}row-overdue{% endif %}">
+        <td class="td-id">{{ task.id }}</td>
+        <td><a href="{{ url_for('tasks.detail', task_id=task.id) }}" class="task-link">{{ task.title }}</a></td>
+        <td><span class="badge badge-{{ task.status.name.lower() }}">{{ task.status.value }}</span></td>
+        <td>{{ task.due_date.strftime('%d %b %Y') if task.due_date else '—' }}</td>
+        <td>Admin</td>
+        <td class="td-actions">
+          <a href="{{ url_for('tasks.detail', task_id=task.id) }}" class="action-btn">View</a>
+          <a href="{{ url_for('tasks.edit', task_id=task.id) }}" class="action-btn">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">📋</div>
+  <p>No tasks yet. <a href="{{ url_for('tasks.create') }}">Create your first task</a></p>
+</div>
+{% endif %}
+{% endblock %}
