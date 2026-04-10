@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Create Task — TaskMaster{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="breadcrumb"><a href="{{ url_for('tasks.list_tasks') }}">Tasks</a> / New Task</div>
+    <h1 class="page-title">Create New Task</h1>
+  </div>
+</div>
+
+<div class="form-container">
+  <div class="form-card">
+    <form method="POST" action="{{ url_for('tasks.create') }}">
+      <div class="form-group">
+        <label for="title">Task Title <span class="required">*</span></label>
+        <input type="text" id="title" name="title" required placeholder="Enter task title"
+               value="{{ form_data.get('title', '') if form_data else '' }}">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" placeholder="Describe the task...">{{ form_data.get('description', '') if form_data else '' }}</textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="due_date">Due Date</label>
+          <input type="date" id="due_date" name="due_date"
+                 value="{{ form_data.get('due_date', '') if form_data else '' }}">
+        </div>
+
+        <div class="form-group">
+          <label for="status">Status <span class="required">*</span></label>
+          <select id="status" name="status">
+            {% for s in statuses %}
+            <option value="{{ s.name }}"
+              {% if form_data and form_data.get('status') == s.name %}selected{% elif s.name == 'PENDING' %}selected{% endif %}>
+              {{ s.value }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="remarks">Remarks</label>
+        <textarea id="remarks" name="remarks" rows="3" placeholder="Any additional remarks...">{{ form_data.get('remarks', '') if form_data else '' }}</textarea>
+      </div>
+
+      <div class="form-actions">
+        <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn btn-primary">Create Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

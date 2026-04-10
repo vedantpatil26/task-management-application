@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ task.title }} — TaskMaster{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="breadcrumb"><a href="{{ url_for('tasks.list_tasks') }}">Tasks</a> / Task #{{ task.id }}</div>
+    <h1 class="page-title">{{ task.title }}</h1>
+  </div>
+  <div class="header-actions">
+    <a href="{{ url_for('tasks.edit', task_id=task.id) }}" class="btn btn-outline">Edit Task</a>
+    <form method="POST" action="{{ url_for('tasks.delete', task_id=task.id) }}" style="display:inline"
+          onsubmit="return confirm('Are you sure you want to delete this task?')">
+      <button type="submit" class="btn btn-danger">Delete Task</button>
+    </form>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div class="detail-main">
+    <div class="detail-card">
+      <div class="detail-status-row">
+        <span class="badge badge-{{ task.status.name.lower() }} badge-lg">{{ task.status.value }}</span>
+        {% if task.is_overdue %}<span class="badge badge-overdue badge-lg">⚠ Overdue</span>{% endif %}
+      </div>
+
+      <div class="detail-section">
+        <h3>Description</h3>
+        <p class="detail-text">{{ task.description or 'No description provided.' }}</p>
+      </div>
+
+      {% if task.remarks %}
+      <div class="detail-section">
+        <h3>Remarks</h3>
+        <p class="detail-text">{{ task.remarks }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="detail-sidebar">
+    <div class="detail-card">
+      <h3>Task Details</h3>
+      <div class="detail-meta">
+        <div class="meta-row">
+          <span class="meta-label">Due Date</span>
+          <span class="meta-value">{{ task.due_date.strftime('%d %B %Y') if task.due_date else '—' }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Status</span>
+          <span class="meta-value">{{ task.status.value }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Created On</span>
+          <span class="meta-value">{{ task.created_on.strftime('%d %b %Y, %H:%M') }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Created By</span>
+          <span class="meta-value">Admin <span class="meta-id">(#1)</span></span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Last Updated</span>
+          <span class="meta-value">{{ task.last_updated_on.strftime('%d %b %Y, %H:%M') }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Updated By</span>
+          <span class="meta-value">Admin <span class="meta-id">(#1)</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="back-link">
+  <a href="{{ url_for('tasks.list_tasks') }}">← Back to Tasks</a>
+</div>
+{% endblock %}
